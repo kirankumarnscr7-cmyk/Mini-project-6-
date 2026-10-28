@@ -2,16 +2,17 @@ import streamlit as st
 import pandas as pd
 import pickle
 
-# Page configuration
+# Page settings
 st.set_page_config(
     page_title="Loan Approval Prediction",
     page_icon="🏦",
     layout="centered"
 )
 
-# Load trained model
+# Load model
 @st.cache_resource
 def load_model():
+
     with open("loan_model.pkl", "rb") as file:
         model = pickle.load(file)
 
@@ -30,9 +31,10 @@ st.write(
 
 st.divider()
 
-# Input section
+# Two columns
 col1, col2 = st.columns(2)
 
+# First column
 with col1:
 
     gender = st.selectbox(
@@ -70,6 +72,7 @@ with col1:
     )
 
 
+# Second column
 with col2:
 
     loan_amount = st.number_input(
@@ -89,7 +92,8 @@ with col2:
         "Credit History",
         [1, 0],
         format_func=lambda x:
-        "Good (1)" if x == 1 else "Bad/Unavailable (0)"
+        "Good (1)" if x == 1
+        else "Bad/Unavailable (0)"
     )
 
     property_area = st.selectbox(
@@ -100,10 +104,9 @@ with col2:
 
 st.divider()
 
-# Prediction button
+# Prediction
 if st.button("🔮 Predict Loan Approval"):
 
-    # Create input dataframe
     input_data = pd.DataFrame([{
 
         "Gender": gender,
@@ -125,6 +128,7 @@ if st.button("🔮 Predict Loan Approval"):
         "Credit_History": credit_history,
 
         "Property_Area": property_area
+
     }])
 
     # Prediction
@@ -141,19 +145,16 @@ if st.button("🔮 Predict Loan Approval"):
 
         st.success("✅ LOAN APPROVED")
 
-        st.write(
-            f"Prediction confidence: {probability:.2f}%"
-        )
-
     else:
 
         st.error("❌ LOAN NOT APPROVED")
 
-        st.write(
-            f"Prediction confidence: {probability:.2f}%"
-        )
+    st.info(
+        f"Prediction Confidence: {probability:.2f}%"
+    )
+
 
 st.caption(
-    "This project is for educational purposes only "
-    "and is not financial advice."
+    "This application is developed for educational "
+    "and mini-project purposes."
 )
